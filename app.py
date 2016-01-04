@@ -1,7 +1,9 @@
 from flask import Flask, Response
+from datetime import datetime, timedelta, time
 import os
 import subprocess
 import json
+import re
 
 app = Flask(__name__)
 
@@ -11,7 +13,11 @@ def hello_world():
     serverstatus['disks'] = get_disk_space()
     serverstatus['memory'] = get_memory()
     serverstatus['cpu'] = get_cpu()
-    return Response(response=json.dumps(serverstatus), status=200, mimetype='application/json')
+    serverstatus['power'] = get_power()
+    lastmodified = datetime.now() - timedelta(minutes=1)
+    headers = {'Last-Modified': lastmodified.ctime()}
+    headers = {'Etag': datetime.now().ctime()}
+    return Response(response=json.dumps(serverstatus), status=200, mimetype='application/json', headers=headers)
     #return str(", ".join(disks[1]))
 
 def get_disk_space():
@@ -69,7 +75,7 @@ def get_cpu():
             5: fivemin[:-1], 
             15: fifteenmin,
             "string": output.split(":")[4].strip()},
-        "servertime": servertime.split()[0],
+        "servertime": datetime.now().strftime("%a %I:%M %P"),
         "users": users.strip(),
         "uptime": " ".join(servertime.split()[-2:]),
         "temperature": get_cpu_temp()
@@ -81,10 +87,10 @@ def get_cpu_temp():
     output = uptime.communicate()[0]
     cur_temp = output.strip().split()[1]
 
-    uptime = subprocess.Popen(["cat", "/proc/acpi/thermal_zone/TZ01/temperature"], stdout=subprocess.PIPE)
+    uptime = subprocess.Popen(["cat", "/proc/acpi/thermal_zone/TZ01/trip_points"], stdout=subprocess.PIPE)
     output = uptime.communicate()[0]
-    max_temp = output.strip().split("\n")[0].split()[1]
-    return {"current_temp": cur_temp, "critical_temp": max_temp}
+    max_temp = output.strip().split("\n")[0].split()[2]
+    return {"current_temp": cur_temp + "C", "critical_temp": max_temp + "C"}
 
 def byte_to_human(kb):
     mb = float(kb) / 1024
@@ -95,6 +101,17 @@ def byte_to_human(kb):
         return format(mb, '.1f') + "m"
     else:
         return str(kb) + "k"
+
+def get_power():
+    pwrstatus = subprocess.Popen(["pwrstat", "-status"], stdout=subprocess.PIPE)
+    output = pwrstatus.communicate()[0]
+    power = {}
+    for l in output.split("\n"):
+        if len(l) > 0 and l.count(".") > 1:
+            l = re.sub(r'\.+', '\t', l.strip())
+            parts = l.split("\t")
+            power[parts[0]] = parts[1].strip()
+    return power
 
 if __name__ == '__main__':
     app.debug = True
