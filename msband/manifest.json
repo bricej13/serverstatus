@@ -1,0 +1,197 @@
+{
+  "manifestVersion": 1,
+  "name": "Server Status",
+  "description": "Server Status",
+  "version": 1,
+  "versionString": "1",
+  "author": "bricej13",
+  "organization": "",
+  "contactEmail": "",
+  "tileIcon": {
+    "46": "icons/tileIcon.png"
+  },
+  "icons": {
+    "icon1_2": "icons/icon1_2.png",
+    "icon1_3": "icons/icon1_3.png",
+    "icon1_4": "icons/icon1_4.png",
+    "icon1_5": "icons/icon1_5.png",
+    "icon1_6": "icons/icon1_6.png",
+    "icon1_7": "icons/icon1_7.png",
+    "icon2_7": "icons/icon2_7.png",
+    "icon3_7": "icons/icon3_7.png"
+  },
+  "refreshIntervalMinutes": 15,
+  "resources": [
+    {
+      "url": "http://YOURSERVERURLHERE",
+      "style": "Simple",
+      "content": {
+        "_1_cpuuptime": "cpu.uptime",
+        "_1_cpuloadstring": "cpu.load.string",
+        "_1_memoryramused": "memory.ram.used",
+        "_1_memoryswapused": "memory.swap.used",
+        "_1_disksmedia1tbmountpoint": "disks./media/1tb.mountpoint",
+        "_1_disksmedia1tbavailable": "disks./media/1tb.available",
+        "_1_disksmedia1tbpercent": "disks./media/1tb.percent",
+        "_1_cpuservertime": "cpu.servertime",
+        "_1_cpuusers": "cpu.users",
+        "_1_cputemperaturecurrent_temp": "cpu.temperature.current_temp",
+        "_1_cputemperaturecritical_temp": "cpu.temperature.critical_temp"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "layout": "MSBand_NoScrollingText",
+      "condition": "true",
+      "textBindings": [
+        {
+          "elementId": "1",
+          "value": "pve.home"
+        },
+        {
+          "elementId": "2",
+          "value": "Uptime {{_1_cpuuptime}}"
+        },
+        {
+          "elementId": "3",
+          "value": "{{_1_cpuloadstring}}"
+        }
+      ]
+    },
+    {
+      "layout": "MSBand_SingleMetricWithSecondary",
+      "condition": "true",
+      "iconBindings": [
+        {
+          "elementId": "21",
+          "conditions": [
+            {
+              "condition": "true",
+              "icon": "icon1_2"
+            }
+          ]
+        }
+      ],
+      "textBindings": [
+        {
+          "elementId": "11",
+          "value": "Ram"
+        },
+        {
+          "elementId": "12",
+          "value": "Used"
+        },
+        {
+          "elementId": "22",
+          "value": "{{_1_memoryramused}}"
+        }
+      ]
+    },
+    {
+      "layout": "MSBand_SingleMetricWithSecondary",
+      "condition": "true",
+      "iconBindings": [
+        {
+          "elementId": "21",
+          "conditions": [
+            {
+              "condition": "true",
+              "icon": "icon1_3"
+            }
+          ]
+        }
+      ],
+      "textBindings": [
+        {
+          "elementId": "11",
+          "value": "Swap"
+        },
+        {
+          "elementId": "12",
+          "value": "Used"
+        },
+        {
+          "elementId": "22",
+          "value": "{{_1_memoryswapused}}"
+        }
+      ]
+    },
+    {
+      "layout": "MSBand_SingleMetricWithSecondary",
+      "condition": "true",
+      "iconBindings": [
+        {
+          "elementId": "21",
+          "conditions": [
+            {
+              "condition": "true",
+              "icon": "icon1_4"
+            }
+          ]
+        }
+      ],
+      "textBindings": [
+        {
+          "elementId": "11",
+          "value": "{{_1_disksmedia1tbmountpoint}}"
+        },
+        {
+          "elementId": "12",
+          "value": "{{_1_disksmedia1tbavailable}}"
+        },
+        {
+          "elementId": "22",
+          "value": "{{_1_disksmedia1tbpercent}}"
+        }
+      ]
+    },
+    {
+      "layout": "MSBand_MetricsWithIcons",
+      "condition": "true",
+      "iconBindings": [
+        {
+          "elementId": "11",
+          "conditions": [
+            {
+              "condition": "true",
+              "icon": "icon1_7"
+            }
+          ]
+        },
+        {
+          "elementId": "21",
+          "conditions": [
+            {
+              "condition": "true",
+              "icon": "icon2_7"
+            }
+          ]
+        },
+        {
+          "elementId": "31",
+          "conditions": [
+            {
+              "condition": "true",
+              "icon": "icon3_7"
+            }
+          ]
+        }
+      ],
+      "textBindings": [
+        {
+          "elementId": "12",
+          "value": "{{_1_cpuservertime}}"
+        },
+        {
+          "elementId": "22",
+          "value": "{{_1_cpuusers}}"
+        },
+        {
+          "elementId": "32",
+          "value": "{{_1_cputemperaturecurrent_temp}} / {{_1_cputemperaturecritical_temp}}"
+        }
+      ]
+    }
+  ]
+}
